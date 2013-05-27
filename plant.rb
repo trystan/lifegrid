@@ -1,13 +1,10 @@
 
 class Plant
   attr_reader :x, :y, :color, :growth
-
-  def alive?
-    @energy > 0 && @age < 100
-  end
+  attr_accessor :energy
 
   def occupied_map
-    @@occupied_map ||= Array.new(200) { Array.new(200) { false } }
+    @@occupied_map ||= Array.new(200) { Array.new(200) { nil } }
   end
 
   def initialize map, population, parent=nil
@@ -27,7 +24,7 @@ class Plant
       9.times.each { @growth[rand(9)] += 1 }
       @energy = rand(50) + 25
       @age = rand(25)
-      occupied_map[x][y] = true
+      occupied_map[x][y] = self
     end
     @climate_map = map
     @population = population
@@ -51,13 +48,13 @@ class Plant
 
     @energy += growth[@climate_map[x, y]] - 1
 
-    if @energy >= 100
-      birth
-    end
+    birth if @energy >= 100
 
-    if !alive?
-      die
-    end
+    die if time_to_die?
+  end
+
+  def time_to_die?
+    @energy < 1 || @age > 100
   end
 
   def birth
@@ -65,14 +62,16 @@ class Plant
 
     child = Plant.new(@climate_map, @population, self)
 
-    if !occupied_map[child.x][child.y]
+    if occupied_map[child.x][child.y]
+      occupied_map[child.x][child.y].energy -= 10
+    else
       @population.push child
-      occupied_map[x][y] = true
+      occupied_map[child.x][child.y] = child
     end
   end
 
   def die
     @population.delete self
-    occupied_map[x][y] = false
+    occupied_map[x][y] = nil
   end
 end
