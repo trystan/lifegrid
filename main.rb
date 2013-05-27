@@ -1,6 +1,7 @@
 
 require 'rubygame'
 require_relative 'climate_map'
+require_relative 'plant'
 
 class Game
   def initialize map
@@ -13,10 +14,7 @@ class Game
 
     @colors = make_colors
 
-    @plants = []
-    (0..199).each do
-      @plants << [rand(200), rand(200)]
-    end    
+    @plants = Array.new(200) { Plant.new }
 
     @climate_map = map
   end
@@ -47,7 +45,7 @@ class Game
     end
 
     @plants.each do |plant|
-      @screen.set_at [plant[0] * 3 + 1, plant[1] * 3 + 1], [0,0,0]
+      @screen.set_at [plant.x * 3 + 1, plant.y * 3 + 1], plant.color
     end
 
     @screen.update
@@ -67,8 +65,11 @@ class Game
   end
 end
 
+
 puts "Creating initial climate"
 map = ClimateMap.new 200, 200
 puts "Starting"
 game = Game.new map
 game.run
+
+
