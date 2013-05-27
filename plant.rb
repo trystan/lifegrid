@@ -3,10 +3,6 @@ class Plant
   attr_reader :x, :y, :color, :growth
   attr_accessor :energy
 
-  def occupied_map
-    @@occupied_map ||= Array.new(200) { Array.new(200) { nil } }
-  end
-
   def initialize map, population, parent=nil
     if parent
       @x = [[0, parent.x + rand(11) - 5].max, 199].min
@@ -29,11 +25,11 @@ class Plant
     @population = population
 
 
-    if occupied_map[x][y]
-      occupied_map[x][y].energy -= 10
+    existing = population.at x, y
+    if existing
+      existing.energy -= 10
     else
-      occupied_map[x][y] = self
-      population.push self
+      population.add self
     end
   end
 
@@ -67,6 +63,5 @@ class Plant
 
   def die
     @population.delete self
-    occupied_map[x][y] = nil
   end
 end

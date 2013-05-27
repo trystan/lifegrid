@@ -2,6 +2,7 @@
 require 'rubygame'
 require_relative 'climate_map'
 require_relative 'plant'
+require_relative 'population'
 
 class Game
   def initialize map
@@ -14,7 +15,7 @@ class Game
 
     @colors = make_colors
 
-    @plants = []
+    @plants = Population.new 200, 200
     (0..199).each { Plant.new(map, @plants) }
 
     @climate_map = map
@@ -37,11 +38,11 @@ class Game
   end
 
   def update
-    @plants.each do |plant|
+    @plants.array.each do |plant|
       plant.update
     end
 
-    puts "Population: #{@plants.length}"
+    puts "Population: #{@plants.size}"
   end
   
   def events
@@ -57,7 +58,7 @@ class Game
   def draw
     @background.blit @screen, [0,0]
 
-    @plants.each do |plant|
+    @plants.array.each do |plant|
       @screen.fill plant.color, [plant.x * 3, plant.y * 3, 2, 2]
     end
 
