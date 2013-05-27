@@ -11,17 +11,7 @@ class Game
     @clock = Rubygame::Clock.new
     @clock.target_framerate = 30
 
-    @colors = [
-        [128,  50, 00],
-        [128,  60, 10],
-        [128,  70, 20],
-        [128,  80, 30],
-        [128,  90, 40],
-        [128, 100, 50],
-        [128, 110, 60],
-        [128, 120, 70],
-        [128, 130, 80]
-      ]
+    @colors = make_colors
 
     @plants = []
     (0..199).each do
@@ -65,6 +55,15 @@ class Game
 
   def color climate
     @colors[climate]
+  end
+
+  def make_colors
+    colors = []
+    (0..8).each do |i|
+      c = Rubygame::Color::ColorHSV.new([0.1, 0.33, (i / 18.0 + 0.25)]).to_rgba_ary
+      colors << [(c[0] * 255).to_i, (c[1] * 255).to_i, (c[2] * 255).to_i]
+    end
+    colors
   end
 end
 
