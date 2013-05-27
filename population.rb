@@ -3,7 +3,7 @@ class Population
   attr_reader :array
 
   def initialize width, height
-    @grid ||= Array.new(width) { Array.new(height) { nil } }
+    @grid = Array.new(width) { Array.new(height) { nil } }
     @array = Array.new
   end
 
