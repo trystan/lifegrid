@@ -23,6 +23,11 @@ class Game
         [128, 130, 80]
       ]
 
+    @plants = []
+    (0..199).each do
+      @plants << [rand(200), rand(200)]
+    end    
+
     @climate_map = map
   end
   
@@ -49,6 +54,10 @@ class Game
       (0 .. 199).each do |y|
         @screen.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
       end
+    end
+
+    @plants.each do |plant|
+      @screen.set_at [plant[0] * 3 + 1, plant[1] * 3 + 1], [0,0,0]
     end
 
     @screen.update
