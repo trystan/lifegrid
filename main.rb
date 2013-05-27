@@ -1,8 +1,9 @@
-require 'perlin_noise'
+
 require 'rubygame'
+require_relative 'climate_map'
 
 class Game
-  def initialize
+  def initialize map
     @screen = Rubygame::Screen.new [600,600], 0, [Rubygame::HWSURFACE, Rubygame::DOUBLEBUF]
     @screen.title = "lifegrid"
 
@@ -22,15 +23,7 @@ class Game
         [128, 130, 80]
       ]
 
-    @noise_maker = Perlin::Noise.new 2
-
-    @climate_map = Array.new(200) { Array.new(200) { 127 } }
-
-    (0 .. 199).each do |x|
-      (0 .. 199).each do |y|
-        @climate_map[x][y] = (@noise_maker[x * 0.033, y * 0.033] * 250.0 / 29.0).to_i
-      end
-    end
+    @climate_map = map
   end
   
   def run
@@ -54,8 +47,7 @@ class Game
   def draw
     (0 .. 199).each do |x|
       (0 .. 199).each do |y|
-        climate = @climate_map[x][y]
-        @screen.fill color(climate), Rubygame::Rect.new(x * 3, y * 3, 3, 3)
+        @screen.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
       end
     end
 
@@ -63,10 +55,12 @@ class Game
   end
 
   def color climate
-    climate = [[0, climate].max, 9].min
     @colors[climate]
   end
 end
 
-game = Game.new
+puts "Creating initial climate"
+map = ClimateMap.new 200, 200
+puts "Starting"
+game = Game.new map
 game.run
