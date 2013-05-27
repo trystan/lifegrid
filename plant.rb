@@ -6,6 +6,10 @@ class Plant
     @energy > 0 && @age < 100
   end
 
+  def occupied_map
+    @@occupied_map ||= Array.new(200) { Array.new(200) { false } }
+  end
+
   def initialize map, population, parent=nil
     if parent
       @x = [[0, parent.x + rand(11) - 5].max, 199].min
@@ -22,6 +26,7 @@ class Plant
       @preferred_climate = rand(9)
       @energy = rand(50) + 25
       @age = rand(50)
+      occupied_map[x][y] = true
     end
     @climate_map = map
     @population = population
@@ -60,12 +65,14 @@ class Plant
 
     child = Plant.new(@climate_map, @population, self)
 
-    if @population.select {|p| p.x == child.x && p.y == child.y }.length
+    if !occupied_map[child.x][child.y]
       @population.push child
+      occupied_map[x][y] = true
     end
   end
 
   def die
     @population.delete self
+    occupied_map[x][y] = false
   end
 end
