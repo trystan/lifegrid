@@ -58,7 +58,7 @@ class Game
     @background.blit @screen, [0,0]
 
     @plants.each do |plant|
-      @screen.set_at [plant.x * 3 + 1, plant.y * 3 + 1], plant.color
+      @screen.fill plant.color, [plant.x * 3, plant.y * 3, 2, 2]
     end
 
     @screen.update

@@ -3,7 +3,7 @@ class Plant
   attr_reader :x, :y, :color, :preferred_climate
 
   def alive?
-    @energy > 0 && @age < 100
+    @energy > 0 && @age < 25
   end
 
   def occupied_map
@@ -25,7 +25,7 @@ class Plant
       @color = [rand(64)+32, rand(64)+32, rand(64)+32]
       @preferred_climate = rand(9)
       @energy = rand(50) + 25
-      @age = rand(50)
+      @age = rand(25)
       occupied_map[x][y] = true
     end
     @climate_map = map
@@ -37,7 +37,7 @@ class Plant
     @color[1] = [[32, @color[1] + rand(7) - 3].max, 64+32].min
     @color[2] = [[32, @color[2] + rand(7) - 3].max, 64+32].min
 
-    if rand(10) == 1
+    if rand(3) == 1
       @preferred_climate = rand(3) - 1
     end
   end
