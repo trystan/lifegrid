@@ -14,20 +14,31 @@ class Game
 
     @colors = make_colors
 
-    @plants = Array.new(200) { Plant.new }
+    @plants = []
+
+    Array.new(200) { Plant.new(map, @plants) } .each { |p| @plants.push p }
 
     @climate_map = map
   end
-  
+
   def run
     loop do
       update
+      events
       draw
       @clock.tick
     end
   end
-  
+
   def update
+    @plants.each do |plant|
+      plant.update
+    end
+
+    puts "Population: #{@plants.length}"
+  end
+  
+  def events
     @queue.each do |ev|
       case ev
         when Rubygame::QuitEvent
