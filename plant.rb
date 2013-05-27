@@ -51,7 +51,7 @@ class Plant
 
   def reproduce
     @energy -= 40
-    Plant.new(@climate_map, @population, self)
+    Plant.new @climate_map, @population, self
   end
 
   def die

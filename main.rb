@@ -12,15 +12,20 @@ class Game
     @queue = Rubygame::EventQueue.new
     @clock = Rubygame::Clock.new
     @clock.target_framerate = 30
+    @ticks = 0
 
     @colors = make_colors
 
     @plants = Population.new 200, 200
-    (0..199).each { Plant.new(map, @plants) }
+    (0..99).each { Plant.new(map, @plants) }
 
     @climate_map = map
 
-    @background = Rubygame::Surface.new [600, 600]    
+    @background = Rubygame::Surface.new [600, 600]
+    update_background
+  end
+
+  def update_background  
     (0 .. 199).each do |x|
       (0 .. 199).each do |y|
         @background.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
@@ -38,6 +43,12 @@ class Game
   end
 
   def update
+    @ticks += 1
+    if @ticks % 10 == 0
+      @climate_map.update
+      update_background
+    end
+
     @plants.array.each do |plant|
       plant.update
     end
