@@ -15,10 +15,16 @@ class Game
     @colors = make_colors
 
     @plants = []
-
-    Array.new(200) { Plant.new(map, @plants) } .each { |p| @plants.push p }
+    (0..199).each { @plants.push Plant.new(map, @plants) }
 
     @climate_map = map
+
+    @background = Rubygame::Surface.new [600, 600]    
+    (0 .. 199).each do |x|
+      (0 .. 199).each do |y|
+        @background.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
+      end
+    end
   end
 
   def run
@@ -49,11 +55,7 @@ class Game
   end
   
   def draw
-    (0 .. 199).each do |x|
-      (0 .. 199).each do |y|
-        @screen.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
-      end
-    end
+    @background.blit @screen, [0,0]
 
     @plants.each do |plant|
       @screen.set_at [plant.x * 3 + 1, plant.y * 3 + 1], plant.color

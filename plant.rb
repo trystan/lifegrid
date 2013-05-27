@@ -14,16 +14,27 @@ class Plant
       @preferred_climate = parent.preferred_climate
       @energy = 30
       @age = 1
+      mutate
     else
       @x = rand(200)
       @y = rand(200)
-      @color = [0,0,0]
+      @color = [rand(64)+32, rand(64)+32, rand(64)+32]
       @preferred_climate = rand(9)
       @energy = rand(50) + 25
       @age = rand(50)
     end
     @climate_map = map
     @population = population
+  end
+
+  def mutate
+    @color[0] = [[32, @color[0] + rand(7) - 3].max, 64+32].min
+    @color[1] = [[32, @color[1] + rand(7) - 3].max, 64+32].min
+    @color[2] = [[32, @color[2] + rand(7) - 3].max, 64+32].min
+
+    if rand(10) == 1
+      @preferred_climate = rand(3) - 1
+    end
   end
 
   def update
