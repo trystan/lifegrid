@@ -10,14 +10,33 @@ class Game
     @clock = Rubygame::Clock.new
     @clock.target_framerate = 30
 
-    @climate_map = Perlin::Noise.new 2
+    @colors = [
+        [128,  50, 00],
+        [128,  60, 10],
+        [128,  70, 20],
+        [128,  80, 30],
+        [128,  90, 40],
+        [128, 100, 50],
+        [128, 110, 60],
+        [128, 120, 70],
+        [128, 130, 80]
+      ]
+
+    @noise_maker = Perlin::Noise.new 2
+
+    @climate_map = Array.new(200) { Array.new(200) { 127 } }
+
+    (0 .. 199).each do |x|
+      (0 .. 199).each do |y|
+        @climate_map[x][y] = (@noise_maker[x * 0.033, y * 0.033] * 250.0 / 29.0).to_i
+      end
+    end
   end
   
   def run
-    draw
     loop do
       update
-      #draw
+      draw
       @clock.tick
     end
   end
@@ -33,14 +52,19 @@ class Game
   end
   
   def draw
-    (0 .. 200).each do |x|
-      (0 .. 200).each do |y|
-        climate = @climate_map[x * 0.01, y * 0.01] * 250
-        @screen.fill [climate, climate, climate], Rubygame::Rect.new(x * 3, y * 3, 3, 3)
+    (0 .. 199).each do |x|
+      (0 .. 199).each do |y|
+        climate = @climate_map[x][y]
+        @screen.fill color(climate), Rubygame::Rect.new(x * 3, y * 3, 3, 3)
       end
     end
 
     @screen.update
+  end
+
+  def color climate
+    climate = [[0, climate].max, 9].min
+    @colors[climate]
   end
 end
 
