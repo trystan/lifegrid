@@ -24,10 +24,17 @@ class Plant
       9.times.each { @growth[rand(9)] += 1 }
       @energy = rand(50) + 25
       @age = rand(25)
-      occupied_map[x][y] = self
     end
     @climate_map = map
     @population = population
+
+
+    if occupied_map[x][y]
+      occupied_map[x][y].energy -= 10
+    else
+      occupied_map[x][y] = self
+      population.push self
+    end
   end
 
   def mutate
@@ -48,26 +55,14 @@ class Plant
 
     @energy += growth[@climate_map[x, y]] - 1
 
-    birth if @energy >= 100
+    reproduce if @energy >= 100
 
-    die if time_to_die?
+    die if @energy < 1 || @age > 100
   end
 
-  def time_to_die?
-    @energy < 1 || @age > 100
-  end
-
-  def birth
+  def reproduce
     @energy -= 40
-
-    child = Plant.new(@climate_map, @population, self)
-
-    if occupied_map[child.x][child.y]
-      occupied_map[child.x][child.y].energy -= 10
-    else
-      @population.push child
-      occupied_map[child.x][child.y] = child
-    end
+    Plant.new(@climate_map, @population, self)
   end
 
   def die

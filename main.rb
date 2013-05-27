@@ -15,7 +15,7 @@ class Game
     @colors = make_colors
 
     @plants = []
-    (0..199).each { @plants.push Plant.new(map, @plants) }
+    (0..199).each { Plant.new(map, @plants) }
 
     @climate_map = map
 
