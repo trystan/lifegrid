@@ -8,13 +8,13 @@ class ClimateMap
 
     @noise_maker = Perlin::Generator.new rand(1000), 1.5, 1
     @ticks = 0
+    @precalc_map = Array.new(width) { Array.new(height) { 0 } }
 
     make_base_map
   end
 
   def [] *coords
-    base = (@climate_map[coords[0]][coords[1]][0] + 1.0) * 4.5
-    clamp adjust(base)
+    @precalc_map[coords[0]][coords[1]]
   end
 
   def update
@@ -24,6 +24,13 @@ class ClimateMap
 
   def make_base_map
     @climate_map = @noise_maker.chunk 1, 1, @ticks * 0.001, 200, 200, 1, 0.02
+
+    (0 .. 199).each do |x|
+      (0 .. 199).each do |y|
+        base = (@climate_map[x][y][0] + 1.0) * 4.5
+        @precalc_map[x][y] = clamp adjust(base)
+      end
+    end
   end
 
   def adjust amount
@@ -43,7 +50,6 @@ class ClimateMap
   def long_cycle
     1.33 * Math::sin(@ticks * @long_cycle_length)
   end
-
 
   def clamp amount
     [[0, amount].max, 8].min.to_i
