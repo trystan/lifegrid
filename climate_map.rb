@@ -1,4 +1,4 @@
-require 'perlin_noise'
+require 'perlin'
 
 class ClimateMap
   def initialize width, height
@@ -6,19 +6,14 @@ class ClimateMap
     @medium_cycle_length = @short_cycle_length * 1.0 / 11
     @long_cycle_length   = @medium_cycle_length * 1.0 / 23
 
-    @noise_maker = Perlin::Noise.new 2
-    @climate_map = Array.new(width) { Array.new(height) { 127 } }
+    @noise_maker = Perlin::Generator.new 1, 1.5, 1
     @ticks = 0
 
-    (0 .. width-1).each do |x|
-      (0 .. height-1).each do |y|
-        @climate_map[x][y] = @noise_maker[x * 0.033, y * 0.033] * 250.0
-      end
-    end
+    @climate_map = @noise_maker.chunk 1, 1, 200, 200, 0.02
   end
 
   def [] *coords
-    base = @climate_map[coords[0]][coords[1]]
+    base = (@climate_map[coords[0]][coords[1]] + 1.0) * 4.5
     clamp adjust(base)
   end
 
@@ -33,19 +28,19 @@ class ClimateMap
   private
 
   def short_cycle
-    14 * Math::sin(@ticks * @short_cycle_length)
+    0.66 * Math::sin(@ticks * @short_cycle_length)
   end
   
   def medium_cycle
-    14 * Math::sin(@ticks * @medium_cycle_length)
+    1.0 * Math::sin(@ticks * @medium_cycle_length)
   end
   
   def long_cycle
-    14 * Math::sin(@ticks * @long_cycle_length)
+    1.33 * Math::sin(@ticks * @long_cycle_length)
   end
 
 
   def clamp amount
-    [[0, amount / 29.0].max, 9].min.to_i
+    [[0, amount].max, 8].min.to_i
   end
 end
