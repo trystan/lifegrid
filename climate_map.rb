@@ -6,7 +6,7 @@ class ClimateMap
     @medium_cycle_length = @short_cycle_length * 1.0 / 11
     @long_cycle_length   = @medium_cycle_length * 1.0 / 23
 
-    @noise_maker = Perlin::Generator.new 1, 1.5, 1
+    @noise_maker = Perlin::Generator.new rand(1000), 1.5, 1
     @ticks = 0
 
     make_base_map

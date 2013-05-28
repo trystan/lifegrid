@@ -5,7 +5,7 @@ require_relative 'plant'
 require_relative 'population'
 
 class Game
-  def initialize map
+  def initialize
     @screen = Rubygame::Screen.new [600,600], 0, [Rubygame::HWSURFACE, Rubygame::DOUBLEBUF]
     @screen.title = "lifegrid"
 
@@ -14,13 +14,13 @@ class Game
     @clock.target_framerate = 30
     @ticks = 0
     @speed = 1
+    @climate_map = ClimateMap.new 200, 200
 
     @colors = make_colors
 
     @plants = Population.new 200, 200
-    (0..99).each { Plant.new(map, @plants) }
+    (0..99).each { Plant.new(@climate_map, @plants) }
 
-    @climate_map = map
     @draw_climate = true
 
     @background = Rubygame::Surface.new [600, 600]
@@ -80,8 +80,6 @@ class Game
           elsif event.key == Rubygame::K_SPACE
             @draw_climate = !@draw_climate
             update_background
-          else
-            puts event.key
           end
       end
     end
@@ -115,11 +113,7 @@ class Game
   end
 end
 
-
-puts "Creating initial climate"
-map = ClimateMap.new 200, 200
-puts "Starting"
-game = Game.new map
+game = Game.new
 game.run
 
 
