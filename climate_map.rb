@@ -9,16 +9,21 @@ class ClimateMap
     @noise_maker = Perlin::Generator.new 1, 1.5, 1
     @ticks = 0
 
-    @climate_map = @noise_maker.chunk 1, 1, 200, 200, 0.02
+    make_base_map
   end
 
   def [] *coords
-    base = (@climate_map[coords[0]][coords[1]] + 1.0) * 4.5
+    base = (@climate_map[coords[0]][coords[1]][0] + 1.0) * 4.5
     clamp adjust(base)
   end
 
   def update
     @ticks += 1
+    make_base_map
+  end
+
+  def make_base_map
+    @climate_map = @noise_maker.chunk 1, 1, @ticks * 0.001, 200, 200, 1, 0.02
   end
 
   def adjust amount
