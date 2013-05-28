@@ -13,6 +13,7 @@ class Game
     @clock = Rubygame::Clock.new
     @clock.target_framerate = 30
     @ticks = 0
+    @speed = 1
 
     @colors = make_colors
 
@@ -39,7 +40,7 @@ class Game
   def run
     @running = true
     while @running do
-      update
+      @speed.times { update }
       events
       draw
       @clock.tick
@@ -58,7 +59,7 @@ class Game
       plant.update
     end
 
-    puts "Population: #{@plants.size}\t\t Climate: #{@climate_map.adjust(0)/28}"
+    puts "Population: #{@plants.size}"
   end
   
   def events
@@ -67,7 +68,16 @@ class Game
         when Rubygame::QuitEvent
           @running = false
         when Rubygame::KeyDownEvent
-          if event.key == Rubygame::K_SPACE
+          if event.key == Rubygame::K_PLUS || event.key == Rubygame::K_EQUALS
+            @speed += 1
+            @screen.title = "lifegrid"
+            @screen.title += " (x#{@speed})" if @speed > 0
+          elsif event.key == Rubygame::K_MINUS
+            @speed = [@speed - 1, 0].max
+            @screen.title = "lifegrid"
+            @screen.title += " (x#{@speed})" if @speed > 0
+            @screen.title += " (paused)" if @speed == 0
+          elsif event.key == Rubygame::K_SPACE
             @draw_climate = !@draw_climate
             update_background
           else
