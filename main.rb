@@ -20,12 +20,15 @@ class Game
     (0..99).each { Plant.new(map, @plants) }
 
     @climate_map = map
+    @draw_climate = true
 
     @background = Rubygame::Surface.new [600, 600]
     update_background
   end
 
-  def update_background  
+  def update_background
+    return if !@draw_climate
+
     (0 .. 199).each do |x|
       (0 .. 199).each do |y|
         @background.fill color(@climate_map[x, y]), [x * 3, y * 3, 3, 3]
@@ -34,12 +37,14 @@ class Game
   end
 
   def run
-    loop do
+    @running = true
+    while @running do
       update
       events
       draw
       @clock.tick
     end
+    Rubygame.quit
   end
 
   def update
@@ -53,21 +58,31 @@ class Game
       plant.update
     end
 
-    puts "Population: #{@plants.size}"
+    puts "Population: #{@plants.size}\t\t Climate: #{@climate_map.adjust(0)/28}"
   end
   
   def events
-    @queue.each do |ev|
-      case ev
+    @queue.each do |event|
+      case event
         when Rubygame::QuitEvent
-          Rubygame.quit
-          exit
+          @running = false
+        when Rubygame::KeyDownEvent
+          if event.key == Rubygame::K_SPACE
+            @draw_climate = !@draw_climate
+            update_background
+          else
+            puts event.key
+          end
       end
     end
   end
   
   def draw
-    @background.blit @screen, [0,0]
+    if @draw_climate
+      @background.blit @screen, [0,0]
+    else
+      @screen.fill [32,32,32]
+    end
 
     @plants.array.each do |plant|
       @screen.fill plant.color, [plant.x * 3, plant.y * 3, 2, 2]
@@ -83,7 +98,7 @@ class Game
   def make_colors
     colors = []
     (0..8).each do |i|
-      c = Rubygame::Color::ColorHSV.new([0.1, 0.33, (i / 18.0 + 0.25)]).to_rgba_ary
+      c = Rubygame::Color::ColorHSV.new([0.1, 0.25, (i / 45.0 + 0.2)]).to_rgba_ary
       colors << [(c[0] * 255).to_i, (c[1] * 255).to_i, (c[2] * 255).to_i]
     end
     colors

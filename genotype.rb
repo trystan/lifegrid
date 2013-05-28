@@ -21,9 +21,9 @@ class Genotype
   end
 
   def mutate
-    @color[0] = [[32, @color[0] + rand(7) - 3].max, 64+32].min
-    @color[1] = [[32, @color[1] + rand(7) - 3].max, 64+32].min
-    @color[2] = [[32, @color[2] + rand(7) - 3].max, 64+32].min
+    @color[0] = [[32, @color[0] + rand(5) - 2].max, 64+32].min
+    @color[1] = [[32, @color[1] + rand(5) - 2].max, 64+32].min
+    @color[2] = [[32, @color[2] + rand(5) - 2].max, 64+32].min
 
     from = rand(9)
     to = rand(9)
