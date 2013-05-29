@@ -105,7 +105,7 @@ class Game
   def make_colors
     colors = []
     (0..8).each do |i|
-      c = Rubygame::Color::ColorHSV.new([0.1, 0.25, (i / 81.0 + 0.2)]).to_rgba_ary
+      c = Rubygame::Color::ColorHSV.new([0.1, 0.25, i / 40.0 + 0.3]).to_rgba_ary
       colors << [(c[0] * 255).to_i, (c[1] * 255).to_i, (c[2] * 255).to_i]
     end
     colors
